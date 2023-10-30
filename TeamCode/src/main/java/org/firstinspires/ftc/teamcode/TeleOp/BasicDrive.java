@@ -14,6 +14,9 @@ public class BasicDrive extends OpMode {
     public static DcMotor FrontRight = null;
     public static DcMotor BackLeft = null;
     public static DcMotor BackRight = null;
+//    public static DcMotor Lift = null;
+//    public static DcMotor Claw = null;
+    public static DcMotor Launcher = null;
 
     @Override
     public void init() {
@@ -29,18 +32,29 @@ public class BasicDrive extends OpMode {
         FrontRight = hardwareMap.get(DcMotor.class, "FR");
         BackLeft = hardwareMap.get(DcMotor.class, "BL");
         BackRight = hardwareMap.get(DcMotor.class, "BR");
+//        Lift = hardwareMap.get(DcMotor.class, "Lift");
+//        Claw = hardwareMap.get(DcMotor.class, "Claw");
+        Launcher = hardwareMap.get(DcMotor.class, "PlaneLauncher");
 
         //this sets the direction that the motors spin
         FrontLeft.setDirection(DcMotor.Direction.FORWARD);
-        FrontRight.setDirection(DcMotor.Direction.FORWARD);
+        FrontRight.setDirection(DcMotor.Direction.REVERSE);
         BackLeft.setDirection(DcMotor.Direction.FORWARD);
-        BackRight.setDirection(DcMotor.Direction.FORWARD);
+        BackRight.setDirection(DcMotor.Direction.REVERSE);
+//        Lift.setDirection(DcMotor.Direction.FORWARD);
+//        Claw.setDirection(DcMotor.Direction.FORWARD);
+        Launcher.setDirection(DcMotor.Direction.FORWARD);
+
 
         //this resets the encoders to zero, so that the recordings are accurate
         FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        Lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        Claw.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Launcher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
 
         /*this sets up the movement so that anytime the motors are used
         it will use encoders*/
@@ -48,18 +62,25 @@ public class BasicDrive extends OpMode {
         FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         BackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         BackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        Lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        Claw.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
         //this sets the motors to immediately brake when power is zero
-        FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        BackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        BackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        BackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        BackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         //this makes sure that the motor do not move before they are set to
         FrontLeft.setPower(0);
         FrontRight.setPower(0);
         BackLeft.setPower(0);
         BackRight.setPower(0);
+//        Lift.setPower(0);
+//        Claw.setPower(0);
+        Launcher.setPower(0);
 
         //this is the text visible on the driver hub that the robot is done initializing
         telemetry.addData("Status" , "Initialized");
@@ -71,19 +92,49 @@ public class BasicDrive extends OpMode {
 
         //value each input from the controller
         double straightIn = (gamepad1.left_stick_y); //forward or backward
-//        double strafeIn = (gamepad1.left_stick_x); //straight left or right
-//        double turnIn = (gamepad1.right_stick_x); //turning
+        double strafeIn = (gamepad1.left_stick_x); //straight left or right
+        double turnIn = (gamepad1.right_stick_x); //turning
 
-        //using the input from controller to set the output for the motors
-        FrontLeft.setPower(straightIn);
-        FrontRight.setPower(straightIn);
-        BackLeft.setPower(straightIn);
-        BackRight.setPower(straightIn);
+        /*using the input from controller to set the output for the motors
+        all the positive inputs or added inputs are the motors that will spin forward with that direction input*/
+//        FrontLeft.setPower(straightIn + turnIn + strafeIn);
+//        FrontRight.setPower(straightIn - turnIn - strafeIn);
+//        BackLeft.setPower(straightIn + turnIn - strafeIn);
+//        BackRight.setPower(straightIn - turnIn + strafeIn);
+
+
+        if (gamepad1.left_bumper && gamepad1.right_bumper) {
+            //launches paper airplane
+            Launcher.setPower(1);
+        } else {
+            Launcher.setPower(0);
+        }
+        if (gamepad1.b) {
+            FrontLeft.setPower(0.25);
+            FrontRight.setPower(0.25);
+            BackLeft.setPower(0.25);
+            BackRight.setPower(0.25);
+        } else {
+            FrontLeft.setPower(0);
+            FrontRight.setPower(0);
+            BackLeft.setPower(0);
+            BackRight.setPower(0);
+        }
+        //else if (gamepad2.x) {
+//            //claw opens
+//        } else if (gamepad2.y) {
+//            //claw closes
+//        } else if (gamepad2.dpad_up) {
+//            //lift moves up
+//        } else if (gamepad2.dpad_down) {
+//            //lift moves down
+//        }
 
         //encoder data for each motor
         telemetry.addLine("FL:" + FrontLeft.getCurrentPosition());
         telemetry.addLine("FR:" + FrontRight.getCurrentPosition());
         telemetry.addLine("BL:" + BackLeft.getCurrentPosition());
         telemetry.addLine("BR:" + BackRight.getCurrentPosition());
+        telemetry.addLine("ControllerInput:" + straightIn);
     }
 }
