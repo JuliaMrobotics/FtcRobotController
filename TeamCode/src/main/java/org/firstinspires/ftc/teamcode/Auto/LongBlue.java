@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.Auto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.WebcamExample;
 import org.opencv.core.Mat;
@@ -27,9 +29,10 @@ public class LongBlue extends LinearOpMode {
     public static DcMotor BackRight = null;
 //    public static DcMotor Launcher = null;
     public static int position = -1;
+    public static boolean realBot = false;
 
     @Override
-    public void runOpMode() throws InterruptedException{
+    public void runOpMode() throws InterruptedException {
 
         telemetry.clearAll();
 
@@ -44,14 +47,23 @@ public class LongBlue extends LinearOpMode {
 //        Launcher = hardwareMap.get(DcMotor.class, "PlaneLauncher");
 
         //this sets the direction that the motors spin
-        FrontLeft.setDirection(DcMotor.Direction.FORWARD);
-        FrontRight.setDirection(DcMotor.Direction.REVERSE);
-        BackLeft.setDirection(DcMotor.Direction.FORWARD);
-        BackRight.setDirection(DcMotor.Direction.REVERSE);
+        if (realBot == true) {
+            FrontLeft.setDirection(DcMotor.Direction.FORWARD);
+            FrontRight.setDirection(DcMotor.Direction.REVERSE);
+            BackLeft.setDirection(DcMotor.Direction.FORWARD);
+            BackRight.setDirection(DcMotor.Direction.REVERSE);
 //        Lift.setDirection(DcMotor.Direction.FORWARD);
 //        Claw.setDirection(DcMotor.Direction.FORWARD);
 //        Launcher.setDirection(DcMotor.Direction.FORWARD);
-
+        } else {
+            FrontLeft.setDirection(DcMotor.Direction.REVERSE);
+            FrontRight.setDirection(DcMotor.Direction.REVERSE);
+            BackLeft.setDirection(DcMotor.Direction.FORWARD);
+            BackRight.setDirection(DcMotor.Direction.FORWARD);
+//        Lift.setDirection(DcMotor.Direction.FORWARD);
+//        Claw.setDirection(DcMotor.Direction.FORWARD);
+//        Launcher.setDirection(DcMotor.Direction.FORWARD);
+        }
 
         //this resets the encoders to zero, so that the recordings are accurate
         FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -106,29 +118,56 @@ public class LongBlue extends LinearOpMode {
 
         waitForStart();
 
-        while (opModeIsActive()) {
+//        while (opModeIsActive()) {
+//
+//            telemetry.addData("Frame Count", webcam.getFrameCount());
+//            telemetry.addData("FPS", String.format("%.2f", webcam.getFps()));
+//            telemetry.addData("Total frame time ms", webcam.getTotalFrameTimeMs());
+//            telemetry.addData("Pipeline time ms", webcam.getPipelineTimeMs());
+//            telemetry.addData("Overhead time ms", webcam.getOverheadTimeMs());
+//            telemetry.addData("Theoretical max FPS", webcam.getCurrentPipelineMaxFps());
+//            telemetry.update();
+//
+//            if (gamepad1.a) {
+//                webcam.stopStreaming();
+//                //webcam.closeCameraDevice();
+//            }
+//            sleep(100);
+//        }
 
-            telemetry.addData("Frame Count", webcam.getFrameCount());
-            telemetry.addData("FPS", String.format("%.2f", webcam.getFps()));
-            telemetry.addData("Total frame time ms", webcam.getTotalFrameTimeMs());
-            telemetry.addData("Pipeline time ms", webcam.getPipelineTimeMs());
-            telemetry.addData("Overhead time ms", webcam.getOverheadTimeMs());
-            telemetry.addData("Theoretical max FPS", webcam.getCurrentPipelineMaxFps());
-            telemetry.update();
-
-            if(gamepad1.a) {
-                webcam.stopStreaming();
-                //webcam.closeCameraDevice();
-            }
-            sleep(100);
+        if (position == 0) {
+            webcam.stopStreaming();
+            straightDrive(25, 0.5);
+            sleep(3000);
+            strafeDrive(-10, 0.5);
+            sleep(1000);
+            strafeDrive(10, 0.5);
+            sleep(1000);
+            straightDrive(-22, 0.5);
+            sleep(2000);
+            strafeDrive(-86, 0.5);
+            sleep(5000);
+        } else if (position == 1) {
+            webcam.stopStreaming();
+            straightDrive(30, 0.5);
+            sleep(3000);
+            straightDrive(-27, 0.5);
+            sleep(2000);
+            strafeDrive(-86, 0.5);
+            sleep(5000);
+        } else if (position == 2) {
+            webcam.stopStreaming();
+            straightDrive(25, 0.5);
+            sleep(3000);
+            strafeDrive(10, 0.5);
+            sleep(1000);
+            strafeDrive(-10, 0.5);
+            sleep(1000);
+            straightDrive(-22, 0.5);
+            sleep(2000);
+            strafeDrive(-86, 0.5);
+            sleep(5000);
         }
-
-        straightDrive(30, 0.5);
-        sleep(3000);
-        straightDrive(-27, 0.5);
-        sleep(2000);
-        strafeDrive(-86, 0.5);
-        sleep(5000);
     }
 
     class SamplePipeline extends OpenCvPipeline {
@@ -136,12 +175,12 @@ public class LongBlue extends LinearOpMode {
 
         @Override
         public Mat processFrame(Mat input) {
-            Point LeftTop = new Point(0,60);
-            Point LeftBottom = new Point(60, 120);
-            Point MiddleTop = new Point(120, 60);
-            Point MiddleBottom = new Point(200, 120);
-            Point RightTop = new Point(320, 60);
-            Point RightBottom = new Point(260, 120);
+            Point LeftTop = new Point(0,100);
+            Point LeftBottom = new Point(60, 160);
+            Point MiddleTop = new Point(120, 100);
+            Point MiddleBottom = new Point(200, 160);
+            Point RightTop = new Point(320, 100);
+            Point RightBottom = new Point(260, 160);
             int red = 0;
             int green = 0;
             int blue = 0;
@@ -249,10 +288,17 @@ public class LongBlue extends LinearOpMode {
         BackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        FrontLeft.setTargetPosition(FrontLeft.getCurrentPosition() + (int) (43.47343 * -distance));
-        FrontRight.setTargetPosition(FrontRight.getCurrentPosition() + (int) (43.47343 * distance));
-        BackLeft.setTargetPosition(BackLeft.getCurrentPosition() + (int) (43.47343 * distance));
-        BackRight.setTargetPosition(BackRight.getCurrentPosition() + (int) (43.47343 * -distance));
+        if (realBot == true) {
+            FrontLeft.setTargetPosition(FrontLeft.getCurrentPosition() + (int) (43.47343 * -distance));
+            FrontRight.setTargetPosition(FrontRight.getCurrentPosition() + (int) (43.47343 * distance));
+            BackLeft.setTargetPosition(BackLeft.getCurrentPosition() + (int) (43.47343 * distance));
+            BackRight.setTargetPosition(BackRight.getCurrentPosition() + (int) (43.47343 * -distance));
+        } else {
+            FrontLeft.setTargetPosition(FrontLeft.getCurrentPosition() + (int) (48.30381 * -distance)); //39.12609
+            FrontRight.setTargetPosition(FrontRight.getCurrentPosition() + (int) (48.30381 * distance));
+            BackLeft.setTargetPosition(BackLeft.getCurrentPosition() + (int) (48.30381 * distance));
+            BackRight.setTargetPosition(BackRight.getCurrentPosition() + (int) (48.30381 * -distance));
+        }
 
         FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -272,10 +318,17 @@ public class LongBlue extends LinearOpMode {
         BackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        FrontLeft.setTargetPosition(FrontLeft.getCurrentPosition() + (int) (43.47343 * -distance));
-        FrontRight.setTargetPosition(FrontRight.getCurrentPosition() + (int) (43.47343 * -distance));
-        BackLeft.setTargetPosition(BackLeft.getCurrentPosition() + (int) (43.47343 * -distance));
-        BackRight.setTargetPosition(BackRight.getCurrentPosition() + (int) (43.47343 * -distance));
+        if (realBot == true) {
+            FrontLeft.setTargetPosition(FrontLeft.getCurrentPosition() + (int) (43.47343 * -distance));
+            FrontRight.setTargetPosition(FrontRight.getCurrentPosition() + (int) (43.47343 * -distance));
+            BackLeft.setTargetPosition(BackLeft.getCurrentPosition() + (int) (43.47343 * -distance));
+            BackRight.setTargetPosition(BackRight.getCurrentPosition() + (int) (43.47343 * -distance));
+        } else {
+            FrontLeft.setTargetPosition(FrontLeft.getCurrentPosition() + (int) (48.30381 * -distance));
+            FrontRight.setTargetPosition(FrontRight.getCurrentPosition() + (int) (48.30381 * -distance));
+            BackLeft.setTargetPosition(BackLeft.getCurrentPosition() + (int) (48.30381 * -distance));
+            BackRight.setTargetPosition(BackRight.getCurrentPosition() + (int) (48.30381 * -distance));
+        }
 
         FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
