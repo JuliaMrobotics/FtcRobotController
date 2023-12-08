@@ -145,10 +145,8 @@ public class LongBlue extends LinearOpMode {
             sleep(2000);
             Turn(-22, 0.5);
             sleep(2000);
-//            straightDrive(80, 0.5);
-//            sleep(3000);
-//            strafeDrive(-96, 0.5);
-//            sleep(5000);
+            straightDrive(110, 0.5);
+            sleep(5000);
         } else if (position == 1) {
             webcam.stopStreaming();
             straightDrive(30, 0.5);
@@ -158,14 +156,12 @@ public class LongBlue extends LinearOpMode {
             sleep(2000);
             strafeDrive(20, 0.5);
             sleep(2000);
-            straightDrive(20, 0.5);
+            straightDrive(25, 0.5);
             sleep(2000);
             Turn(-22, 0.5);
             sleep(2000);
-//            straightDrive(80, 0.5);
-//            sleep(3000);
-//            strafeDrive(-86, 0.5);
-//            sleep(5000);
+            straightDrive(100,0.5);
+            sleep(5000);
         } else {
             webcam.stopStreaming();
             straightDrive(24, 0.5);
@@ -179,12 +175,10 @@ public class LongBlue extends LinearOpMode {
             sleep(1000);
             Turn(-8, 0.5);
             sleep(2000);
-            strafeDrive(27, 0.5);
+            strafeDrive(28, 0.5);
             sleep(3000);
-//            straightDrive(80, 0.5);
-//            sleep(3000);
-//            strafeDrive(-76, 0.5);
-//            sleep(5000);
+            straightDrive(90, 0.5);
+            sleep(4000);
         }
     }
 
