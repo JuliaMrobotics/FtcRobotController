@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.Auto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.WebcamExample;
 import org.opencv.core.Mat;
@@ -23,6 +25,7 @@ public class LongRed extends LinearOpMode {
     public static DcMotor FrontRight = null;
     public static DcMotor BackLeft = null;
     public static DcMotor BackRight = null;
+    public static Servo Claw = null;
 //    public static DcMotor Launcher = null;
     public static int position = -1;
 
@@ -38,8 +41,7 @@ public class LongRed extends LinearOpMode {
         BackLeft = hardwareMap.get(DcMotor.class, "BL");
         BackRight = hardwareMap.get(DcMotor.class, "BR");
 //        Lift = hardwareMap.get(DcMotor.class, "Lift");
-//        Claw = hardwareMap.get(DcMotor.class, "Claw");
-//        Launcher = hardwareMap.get(DcMotor.class, "PlaneLauncher");
+        Claw = hardwareMap.get(Servo.class, "Claw");
 
         //this sets the direction that the motors spin
         FrontLeft.setDirection(DcMotor.Direction.FORWARD);
@@ -47,7 +49,6 @@ public class LongRed extends LinearOpMode {
         BackLeft.setDirection(DcMotor.Direction.FORWARD);
         BackRight.setDirection(DcMotor.Direction.REVERSE);
 //        Lift.setDirection(DcMotor.Direction.FORWARD);
-//        Claw.setDirection(DcMotor.Direction.FORWARD);
 //        Launcher.setDirection(DcMotor.Direction.FORWARD);
 
 
@@ -57,7 +58,6 @@ public class LongRed extends LinearOpMode {
         BackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        Lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        Claw.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        Launcher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
@@ -68,7 +68,6 @@ public class LongRed extends LinearOpMode {
         BackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         BackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        Lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        Claw.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        Launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
@@ -84,7 +83,7 @@ public class LongRed extends LinearOpMode {
         BackLeft.setPower(0);
         BackRight.setPower(0);
 //        Lift.setPower(0);
-//        Claw.setPower(0);
+        Claw.setPosition(0);
 //        Launcher.setPower(0);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -105,29 +104,57 @@ public class LongRed extends LinearOpMode {
 
         waitForStart();
 
-        while (opModeIsActive()) {
+//        while (opModeIsActive()) {
+//
+//            telemetry.addData("Frame Count", webcam.getFrameCount());
+//            telemetry.addData("FPS", String.format("%.2f", webcam.getFps()));
+//            telemetry.addData("Total frame time ms", webcam.getTotalFrameTimeMs());
+//            telemetry.addData("Pipeline time ms", webcam.getPipelineTimeMs());
+//            telemetry.addData("Overhead time ms", webcam.getOverheadTimeMs());
+//            telemetry.addData("Theoretical max FPS", webcam.getCurrentPipelineMaxFps());
+//            telemetry.update();
+//
+//            if(gamepad1.a) {
+//                webcam.stopStreaming();
+//                //webcam.closeCameraDevice();
+//            }
+//            sleep(100);
+//        }
 
-            telemetry.addData("Frame Count", webcam.getFrameCount());
-            telemetry.addData("FPS", String.format("%.2f", webcam.getFps()));
-            telemetry.addData("Total frame time ms", webcam.getTotalFrameTimeMs());
-            telemetry.addData("Pipeline time ms", webcam.getPipelineTimeMs());
-            telemetry.addData("Overhead time ms", webcam.getOverheadTimeMs());
-            telemetry.addData("Theoretical max FPS", webcam.getCurrentPipelineMaxFps());
-            telemetry.update();
-
-            if(gamepad1.a) {
-                webcam.stopStreaming();
-                //webcam.closeCameraDevice();
-            }
-            sleep(100);
+        if (position == 2) {
+            webcam.stopStreaming();
+            straightDrive(24, 0.5);
+            sleep(3000);
+            Turn (14, 0.5);
+            sleep(2000);
+            straightDrive(7, 0.5);
+            sleep(1000);
+            Claw.setPosition(0.25);
+            straightDrive(-7, 0.5);
+            sleep(1000);
+            Turn(8, 0.5);
+            sleep(2000);
+            strafeDrive(-30, 0.5);
+            sleep(3000);
+//            straightDrive(80, 0.5);
+//            sleep(3000);
+        } else if (position == 1) {
+            webcam.stopStreaming();
+            straightDrive(30, 0.5);
+            sleep(3000);
+            Claw.setPosition(0.25);
+            straightDrive(-27, 0.5);
+            sleep(1000);
+        } else {
+            webcam.stopStreaming();
+            straightDrive(24, 0.5);
+            sleep(3000);
+            strafeDrive(-11, 0.5);
+            sleep(1000);
+            Claw.setPosition(0.25);
+            straightDrive(-22, 0.5);
+            sleep(2000);
         }
-
-        straightDrive(30, 0.5);
-        sleep(3000);
-        straightDrive(-27, 0.5);
-        sleep(2000);
-        strafeDrive(86, 0.5);
-        sleep(5000);
     }
 
     class SamplePipeline extends OpenCvPipeline {
@@ -135,19 +162,19 @@ public class LongRed extends LinearOpMode {
 
         @Override
         public Mat processFrame(Mat input) {
-            Point LeftTop = new Point(0,60);
-            Point LeftBottom = new Point(60, 120);
-            Point MiddleTop = new Point(120, 60);
-            Point MiddleBottom = new Point(200, 120);
-            Point RightTop = new Point(320, 60);
-            Point RightBottom = new Point(260, 120);
+            Point LeftTop = new Point(0,120);
+            Point LeftBottom = new Point(60, 180);
+            Point MiddleTop = new Point(120, 120);
+            Point MiddleBottom = new Point(200, 180);
+            Point RightTop = new Point(320, 120);
+            Point RightBottom = new Point(260, 180);
             int red = 0;
             int green = 0;
             int blue = 0;
             int total = 0;
-            int totalBlueLeft = 0;
-            int totalBlueMiddle = 0;
-            int totalBlueRight = 0;
+            int totalRedLeft = 0;
+            int totalRedMiddle = 0;
+            int totalRedRight = 0;
 
             for (int x = (int)LeftTop.x; x < LeftBottom.x; x++) {
                 for (int y = (int) LeftTop.y; y < LeftBottom.y; y++) {
@@ -158,9 +185,9 @@ public class LongRed extends LinearOpMode {
                 }
             }
 
-            red /= total;
+            blue /= total;
             green /= total;
-            totalBlueLeft = (blue / total) -red -green;
+            totalRedLeft = (red / total) -blue -green;
             blue =0;
             total = 0;
             red = 0;
@@ -176,9 +203,9 @@ public class LongRed extends LinearOpMode {
                 }
             }
 
-            red /= total;
+            blue /= total;
             green /= total;
-            totalBlueMiddle = (blue / total) -red -green;
+            totalRedMiddle = (red / total) -blue -green;
             blue =0;
             total = 0;
             red = 0;
@@ -194,11 +221,11 @@ public class LongRed extends LinearOpMode {
                 }
             }
 
-            red /= total;
+            blue /= total;
             green /= total;
-            totalBlueRight = (blue / total) -red -green;
+            totalRedRight = (red / total) -blue -green;
 
-            if(totalBlueLeft > totalBlueMiddle && totalBlueLeft > totalBlueRight) {
+            if(totalRedLeft > totalRedMiddle && totalRedLeft > totalRedRight) {
                 Imgproc.rectangle(
                         input,
                         LeftTop,
@@ -207,7 +234,7 @@ public class LongRed extends LinearOpMode {
                 position = 0;
             }
 
-            if(totalBlueMiddle > totalBlueLeft && totalBlueMiddle > totalBlueRight) {
+            if(totalRedMiddle > totalRedLeft && totalRedMiddle > totalRedRight) {
                 Imgproc.rectangle(
                         input,
                         MiddleTop,
@@ -216,7 +243,7 @@ public class LongRed extends LinearOpMode {
                 position = 1;
             }
 
-            if(totalBlueRight > totalBlueLeft && totalBlueRight > totalBlueMiddle) {
+            if(totalRedRight > totalRedLeft && totalRedRight > totalRedMiddle) {
                 Imgproc.rectangle(
                         input,
                         RightTop,
@@ -286,4 +313,27 @@ public class LongRed extends LinearOpMode {
         BackLeft.setPower(speed);
         BackRight.setPower(speed);
      }
+
+    public static void Turn (float distance, double speed) {
+
+        FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        FrontLeft.setTargetPosition(FrontLeft.getCurrentPosition() + (int) (43.47343 * -distance));
+        FrontRight.setTargetPosition(FrontRight.getCurrentPosition() + (int) (43.47343 * distance));
+        BackLeft.setTargetPosition(BackLeft.getCurrentPosition() + (int) (43.47343 * -distance));
+        BackRight.setTargetPosition(BackRight.getCurrentPosition() + (int) (43.47343 * distance));
+
+        FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        FrontLeft.setPower(speed);
+        FrontRight.setPower(speed);
+        BackLeft.setPower(speed);
+        BackRight.setPower(speed);
+    }
 }

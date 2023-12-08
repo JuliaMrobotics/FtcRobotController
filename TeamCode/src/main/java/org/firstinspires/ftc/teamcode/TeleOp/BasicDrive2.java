@@ -16,10 +16,14 @@ public class BasicDrive2 extends OpMode {
     public static DcMotor BackLeft = null;
     public static DcMotor BackRight = null;
 //    public static DcMotor Lift = null;
-//    public static DcMotor Claw = null;
+    public static Servo TiltClaw = null;
+    public static Servo Claw = null;
     public static DcMotor Launcher = null;
     public static Servo LeftHangArm = null;
     public static Servo RightHangArm = null;
+    public static double speed = 0.5;
+    public static double LeftArmPosition = 0;
+    public static double RightArmPosition = 0.35;
 
     @Override
     public void init() {
@@ -36,7 +40,8 @@ public class BasicDrive2 extends OpMode {
         BackLeft = hardwareMap.get(DcMotor.class, "BL");
         BackRight = hardwareMap.get(DcMotor.class, "BR");
 //        Lift = hardwareMap.get(DcMotor.class, "Lift");
-//        Claw = hardwareMap.get(DcMotor.class, "Claw");
+        Claw = hardwareMap.get(Servo.class, "Claw");
+        TiltClaw = hardwareMap.get(Servo.class, "Tilt");
         Launcher = hardwareMap.get(DcMotor.class, "PlaneLauncher");
         LeftHangArm = hardwareMap.get(Servo.class, "LArm");
         RightHangArm = hardwareMap.get(Servo.class, "RArm");
@@ -47,7 +52,8 @@ public class BasicDrive2 extends OpMode {
         BackLeft.setDirection(DcMotor.Direction.FORWARD);
         BackRight.setDirection(DcMotor.Direction.REVERSE);
 //        Lift.setDirection(DcMotor.Direction.FORWARD);
-//        Claw.setDirection(DcMotor.Direction.FORWARD);
+        TiltClaw.setDirection(Servo.Direction.FORWARD);
+        Claw.setDirection(Servo.Direction.FORWARD);
         Launcher.setDirection(DcMotor.Direction.FORWARD);
         LeftHangArm.setDirection(Servo.Direction.FORWARD);
         RightHangArm.setDirection(Servo.Direction.FORWARD);
@@ -59,8 +65,6 @@ public class BasicDrive2 extends OpMode {
         BackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        Lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        Claw.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        Launcher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
         /*this sets up the movement so that anytime the motors are used
@@ -70,8 +74,6 @@ public class BasicDrive2 extends OpMode {
         BackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         BackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        Lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        Claw.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        Launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
         //this sets the motors to immediately brake when power is zero
@@ -86,10 +88,11 @@ public class BasicDrive2 extends OpMode {
         BackLeft.setPower(0);
         BackRight.setPower(0);
 //        Lift.setPower(0);
-//        Claw.setPower(0);
+        TiltClaw.setPosition(0.2);
+        Claw.setPosition(0);
         Launcher.setPower(0);
-        LeftHangArm.setPosition(0.35);
-        RightHangArm.setPosition(0);
+        LeftHangArm.setPosition(0);
+        RightHangArm.setPosition(0.35);
 
         //this is the text visible on the driver hub that the robot is done initializing
         telemetry.addData("Status" , "Initialized");
@@ -107,14 +110,20 @@ public class BasicDrive2 extends OpMode {
         /*using the input from controller to set the output for the motors
         all the positive inputs or added inputs are the motors that will spin forward with that direction input*/
 
-            FrontLeft.setPower(straightIn - turnIn - strafeIn);
-            FrontRight.setPower(straightIn + turnIn + strafeIn);
-            BackLeft.setPower(straightIn - turnIn + strafeIn);
-            BackRight.setPower(straightIn + turnIn - strafeIn);
-
-
+        FrontLeft.setPower(speed * straightIn - speed * turnIn - speed * strafeIn);
+        FrontRight.setPower(speed * straightIn + speed * turnIn + speed * strafeIn);
+        BackLeft.setPower(speed * straightIn - speed * turnIn + speed * strafeIn);
+        BackRight.setPower(speed * straightIn + speed * turnIn - speed * strafeIn);
 
 //        Lift.setPower(gamepad2.left_stick_y);
+
+        if (gamepad1.x) {
+            speed = 1;
+        }
+
+        if (gamepad1.b) {
+            speed = 0.5;
+        }
 
         if (gamepad1.left_bumper && gamepad1.right_bumper) {
             //launches paper airplane
@@ -124,31 +133,33 @@ public class BasicDrive2 extends OpMode {
         }
 
         if (gamepad2.y) {
-            LeftHangArm.setPosition(0);
-            RightHangArm.setPosition(0.35);
-        } else if (gamepad2.a) {
-            LeftHangArm.setPosition(0.35);
+            LeftHangArm.setPosition(0.32);
             RightHangArm.setPosition(0);
+            LeftArmPosition = 0.35;
+            RightArmPosition = 0;
+        } else if (gamepad2.a) {
+
+            if (LeftArmPosition > 0 && RightArmPosition < 0.35) {
+                LeftArmPosition = LeftArmPosition - 0.005;
+                RightArmPosition = RightArmPosition + 0.005;
+            }
+            LeftHangArm.setPosition(LeftArmPosition);
+            RightHangArm.setPosition(RightArmPosition);
         }
 
-//        if (gamepad1.b) {
-//            FrontLeft.setPower(0.25);
-//            FrontRight.setPower(0.25);
-//            BackLeft.setPower(0.25);
-//            BackRight.setPower(0.25);
-//        } else {
-//            FrontLeft.setPower(0);
-//            FrontRight.setPower(0);
-//            BackLeft.setPower(0);
-//            BackRight.setPower(0);
-//        }
+        if (gamepad2.x) {
+            Claw.setPosition(0.25);
+        } else if (gamepad2.b) {
+            Claw.setPosition(0);
+        }
 
-//        else if (gamepad2.x) {
-//            //claw opens
-//        } else if (gamepad2.y) {
-//            //claw closes
-//        }
-
+        if (gamepad2.a) {
+            TiltClaw.setPosition(0.2);
+        } else if (gamepad2.y) {
+            TiltClaw.setPosition(0);
+        } else if (gamepad2.left_bumper) {
+            TiltClaw.setPosition(0.25);
+        }
 
         //encoder data for each motor
         telemetry.addLine("FL:" + FrontLeft.getCurrentPosition());
