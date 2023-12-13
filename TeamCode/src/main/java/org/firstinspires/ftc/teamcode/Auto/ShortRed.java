@@ -132,12 +132,12 @@ public class ShortRed extends LinearOpMode {
 
         if (position == 2) {
             webcam.stopStreaming();
-            straightDrive(25, 0.5);
-            sleep(3000);
             strafeDrive(10, 0.5);
             sleep(1000);
+            straightDrive(27, 0.5);
+            sleep(3000);
             Claw.setPosition(0.25);
-            straightDrive(-30, 0.5);
+            straightDrive(-25, 0.5);
             sleep(3000);
             strafeDrive(26, 0.5);
             sleep(5000);
@@ -146,9 +146,9 @@ public class ShortRed extends LinearOpMode {
             straightDrive(30, 0.5);
             sleep(3000);
             Claw.setPosition(0.25);
-            straightDrive(-30, 0.5);
+            straightDrive(-28, 0.5);
             sleep(3000);
-            strafeDrive(36, 0.5);
+            strafeDrive(38, 0.5);
             sleep(5000);
         } else {
             webcam.stopStreaming();
@@ -163,7 +163,7 @@ public class ShortRed extends LinearOpMode {
             sleep(1000);
             Turn(14, 0.5);
             sleep(2000);
-            straightDrive(-27, 0.5);
+            straightDrive(-22, 0.5);
             sleep(3000);
             strafeDrive(36, 0.5);
             sleep(5000);
