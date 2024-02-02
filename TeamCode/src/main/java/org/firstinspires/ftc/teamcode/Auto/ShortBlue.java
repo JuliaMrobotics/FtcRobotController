@@ -135,14 +135,14 @@ public class ShortBlue extends LinearOpMode {
             sleep(3000);
             Turn(14, 0.5);
             sleep(2000);
-            straightDrive(5, 0.5);
+            straightDrive(7, 0.5);
             sleep(1000);
             Claw.setPosition(0.25);
-            straightDrive(-5, 0.5);
+            straightDrive(-8, 0.5);
             sleep(1000);
             Turn(-14, 0.5);
             sleep(2000);
-            straightDrive(-25, 0.5);
+            straightDrive(-23, 0.5);
             sleep(3000);
             strafeDrive(-36, 0.5);
             sleep(5000);
@@ -162,7 +162,7 @@ public class ShortBlue extends LinearOpMode {
             strafeDrive(-10, 0.5);
             sleep(1000);
             Claw.setPosition(0.25);
-            straightDrive(-25, 0.5);
+            straightDrive(-24, 0.5);
             sleep(3000);
             strafeDrive(-26, 0.5);
             sleep(5000);

@@ -133,7 +133,7 @@ public class BasicDrive2 extends OpMode {
         }
 
         if (gamepad2.y) {
-            LeftHangArm.setPosition(0.32);
+            LeftHangArm.setPosition(0.35);
             RightHangArm.setPosition(0);
             LeftArmPosition = 0.35;
             RightArmPosition = 0;

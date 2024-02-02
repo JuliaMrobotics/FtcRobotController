@@ -245,6 +245,9 @@ public class ShortRed extends LinearOpMode {
                         LeftBottom,
                         new Scalar(0, 0, 255), 4);
                 position = 0;
+                telemetry.addLine("Middle" + totalRedMiddle);
+                telemetry.addLine("Left" + totalRedLeft);
+                telemetry.addLine("Right" + totalRedRight);
             }
 
             if(totalRedMiddle > totalRedLeft && totalRedMiddle > totalRedRight) {
@@ -254,6 +257,9 @@ public class ShortRed extends LinearOpMode {
                         MiddleBottom,
                         new Scalar(255, 0, 255), 4);
                 position = 1;
+                telemetry.addLine("Middle" + totalRedMiddle);
+                telemetry.addLine("Left" + totalRedLeft);
+                telemetry.addLine("Right" + totalRedRight);
             }
 
             if(totalRedRight > totalRedLeft && totalRedRight > totalRedMiddle) {
@@ -263,6 +269,9 @@ public class ShortRed extends LinearOpMode {
                         RightBottom,
                         new Scalar(255, 0, 0), 4);
                 position = 2;
+                telemetry.addLine("Middle" + totalRedMiddle);
+                telemetry.addLine("Left" + totalRedLeft);
+                telemetry.addLine("Right" + totalRedRight);
             }
             return input;
         }
